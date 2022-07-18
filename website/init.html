@@ -1,0 +1,70 @@
+<!DOCTYPE html >
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/pure/2.0.3/pure-min.css" />
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.9.0/brython.min.js">
+    </script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.9.0/brython_stdlib.min.js">
+    </script>
+    <script type="text/python" defer>
+        import brython.js
+        import brython_stdlib.js
+        from browser import document, prompt, html, alert, console
+        import init.py
+        subjectsDict = {}
+        import sys
+        console.log(sys.path)
+
+        def addToTable(_):
+            value = document["text-src"].value
+            if not value:
+                alert("You need to enter a value")
+                return
+            if value in subjectsDict:
+                alert(f"The subject '{value}' already exists")
+                return
+            subjectsDict[value] = ""
+            displayTable()
+            console.log(subjectsDict)
+
+        def displayTable() -> None:
+            table = html.TABLE(Class="pure-table")
+            table <= html.THEAD(html.TR(html.TH("Subjects")))
+            table <= (html.TR(html.TD(key)) for key in subjectsDict)
+            subject_table = document["subject-table"]
+            subject_table.clear()
+            subject_table <= table
+            document["text-src"].value = ""
+
+        def clear(_) -> None:
+            subjectsDict.clear()
+            document["subject-table"].clear()
+
+        document["submit"].bind("click", addToTable)
+        document["clear-btn"].bind("click", clear)
+        #document["generate-btn"].bind("click", createFolders(subjectsDict))
+    </script>
+    <style>body { padding: 30px; }</style>
+  </head>
+  <body onload="brython()">
+    <form class="pure-form" onsubmit="return false;">
+      <fieldset>
+        <legend>Generate Folders for your branch</legend>
+        <input type="text" id="text-src" placeholder="Subject name here" />
+        <button
+          type="submit" id="submit"
+          class="pure-button pure-button-primary"
+          autocomplete="off">Ok</button>
+        <button id="clear-btn" class="pure-button">Clear</button>
+        <br>
+        <h1>Click to generate folders, when all subjects are added to table</h1>
+        <button id="generate-btn" class="pure-button pure-button-primary">Generate!</button>
+      </fieldset>
+    </form>
+    <div id="subject-table"></div>
+  </body>
+</html>

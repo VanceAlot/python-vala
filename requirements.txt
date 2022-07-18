@@ -1,0 +1,2 @@
+pip install mega.py
+pip install brython
